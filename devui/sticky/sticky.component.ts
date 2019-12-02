@@ -129,7 +129,9 @@ export class StickyComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     scrollAndResizeHock = () => {
         if (this.container.getBoundingClientRect().left - (this.containerLeft || 0)  !== 0) {
+            const oldStatus = this.status;
             this.status = 'stay';
+            this.status = oldStatus;
             this.containerLeft = this.container.getBoundingClientRect().left;
         } else {
             this.scrollHandler();
