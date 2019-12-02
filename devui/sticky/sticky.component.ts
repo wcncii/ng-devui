@@ -34,7 +34,7 @@ export class StickyComponent implements OnInit, AfterViewInit, OnDestroy {
             this.statusProcess(this._status);
         }
     }
-    get stauts() {
+    get status() {
         return this._status;
     }
 
@@ -45,6 +45,8 @@ export class StickyComponent implements OnInit, AfterViewInit, OnDestroy {
     private THROTTLE_TRIGER = 100;
     private scrollPreStart;
     private scrollTimmer;
+
+    private followHeight: number;
 
     constructor(private el: ElementRef) {
     }
@@ -77,6 +79,7 @@ export class StickyComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.wrapper.nativeElement.style.top = (this.view && this.view.top || 0 ) + 'px';
                 this.wrapper.nativeElement.style.left = this.wrapper.nativeElement.getBoundingClientRect().left + 'px';
                 this.wrapper.nativeElement.style.position = 'fixed';
+                this.followHeight = this.wrapper.nativeElement.getBoundingClientRect().height;
                 break;
             case 'stay':
                 this.wrapper.nativeElement.style.top =
@@ -85,7 +88,7 @@ export class StickyComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.wrapper.nativeElement.style.position = 'relative';
                 break;
             case 'remain':
-                if ( this.wrapper.nativeElement.style.position !== 'fixed' || this.wrapper.nativeElement.style.position !== 'absolute') {
+                if ( this.wrapper.nativeElement.style.position !== 'fixed' && this.wrapper.nativeElement.style.position !== 'absolute') {
                     this.wrapper.nativeElement.style.top =
                         this.calculateRelativePosition(this.wrapper.nativeElement, this.parentNode, 'top') + 'px';
                     this.wrapper.nativeElement.style.left = 'auto';
@@ -145,7 +148,7 @@ export class StickyComponent implements OnInit, AfterViewInit, OnDestroy {
        } else if (this.container.getBoundingClientRect().bottom
            - parseInt(computedStyle.paddingBottom, 10)
            - parseInt(computedStyle.borderBottomWidth, 10)
-           - this.wrapper.nativeElement.getBoundingClientRect().height
+           - (this.followHeight || this.wrapper.nativeElement.getBoundingClientRect().height)
                < (this.view && this.view.top || 0) + (this.view && this.view.bottom || 0)
                ) {
            this.status = 'remain';
